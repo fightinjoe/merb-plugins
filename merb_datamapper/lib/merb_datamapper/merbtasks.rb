@@ -12,6 +12,18 @@ namespace :dm do
     task :automigrate => :merb_start do
       DataMapper::Persistence.auto_migrate!
     end
+
+    desc "Migrate table(s) individually - pass in MODEL=Model1,Model2 to migrate Model1 and Model2"
+    task :migrate => :merb_start do
+      for model in ENV['MODEL'].split(',')
+        begin
+          eval(model).auto_migrate!
+          puts "Succesfully migrated model #{model}."
+        rescue
+          puts "!!! Unable to resolve model name #{model} - did you spell your model name correctly?"
+        end
+      end
+    end
   end
   
   namespace :sessions do
